@@ -82,6 +82,8 @@ public class TampilanClient extends JFrame {
 	
 	public TampilanClient() {
 //		initComponen("");
+		
+//		mainnya hebat
 
 		nyoba = new ArrayList<String>();
 		

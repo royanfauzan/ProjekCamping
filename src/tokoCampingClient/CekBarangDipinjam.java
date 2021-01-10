@@ -47,7 +47,7 @@ public class CekBarangDipinjam extends JFrame {
 	 */
 	public CekBarangDipinjam() {
 		
-
+//	mainnya hebat2
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 616, 387);
