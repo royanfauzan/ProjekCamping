@@ -226,6 +226,8 @@ public class OrderBaruAdmin extends JFrame {
 						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
 						
 						idBefore = currIdPelanggan;
+						
+						totalBiaya =0;
 					} else {
 						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
 					}
