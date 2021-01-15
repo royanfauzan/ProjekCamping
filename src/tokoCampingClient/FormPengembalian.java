@@ -67,7 +67,7 @@ public class FormPengembalian extends JFrame {
 	
 	private String TbIdBar;
 	private int currIdPelanggan,idBefore,currIdPesan,currStok;
-	private int jmlPesan,lamaPinjam,hargaPerBar,totalBayar;
+	private int jmlPesan,lamaPinjam,hargaPerBar,bayarAwal,totalBayar;
 	private int lambat,denda,hilang,rusak;
 	
 	private String kalimat;
@@ -113,6 +113,9 @@ public class FormPengembalian extends JFrame {
 		
 		kalimat = "";
 		idBefore = 0;
+		bayarAwal = 0;
+		totalBayar =0;
+		denda = 0;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 626, 668);
@@ -258,9 +261,15 @@ public class FormPengembalian extends JFrame {
 						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
 						
 						idBefore = currIdPelanggan;
+						
+						bayarAwal = 0;
+						totalBayar =0;
+						denda = 0;
 					} else {
 						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
 					}
+					
+					//Hitung Biaya
 					
 					
 				} else {
