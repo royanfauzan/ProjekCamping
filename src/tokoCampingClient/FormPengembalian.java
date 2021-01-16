@@ -61,7 +61,8 @@ public class FormPengembalian extends JFrame {
 	private ArrayList<Integer> idPesanan;
 	private ArrayList<Integer> listHarga;
 	private ArrayList<Integer> listStok;
-	private ArrayList<Integer> gantiRugi;
+	private ArrayList<Integer> gantiRusak;
+	private ArrayList<Integer> gantiHilang;
 	
 	private JTextArea textArea;
 	
@@ -70,7 +71,7 @@ public class FormPengembalian extends JFrame {
 	
 	private String TbIdBar;
 	private int currIdPelanggan,idBefore,currIdPesan,currStok;
-	private int jmlPesan,lamaPinjam,hargaPerBar,rugiPerBar,bayarItem,bayarAwal,totalBayar;
+	private int jmlPesan,lamaPinjam,hargaPerBar,rusakPerBar,hilangPerBar,bayarItem,bayarAwal,totalBayar;
 	private int lambat,denda,hilang,rusak;
 	
 	private String kalimat;
@@ -113,17 +114,19 @@ public class FormPengembalian extends JFrame {
 		listMulai = new ArrayList<String>();
 		listHarga = new ArrayList<Integer>();
 		listStok = new ArrayList<Integer>();
-		gantiRugi = new ArrayList<Integer>();
+		gantiRusak = new ArrayList<Integer>();
+		gantiHilang = new ArrayList<Integer>();
 		
 		kalimat = "";
 		idBefore = 0;
 		bayarAwal = 0;
 		totalBayar =0;
-		rugiPerBar = 0;
+		rusakPerBar = 0;
+		hilangPerBar = 0;
 		denda = 0;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 626, 668);
+		setBounds(100, 100, 626, 710);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -157,7 +160,8 @@ public class FormPengembalian extends JFrame {
 				currIdPelanggan = idPelanggan.get(i);
 				currStok = listStok.get(i);
 				
-				rugiPerBar = gantiRugi.get(i);
+				hilangPerBar = gantiHilang.get(i);
+				rusakPerBar = gantiRusak.get(i);
 				hargaPerBar = listHarga.get(i);
 				TbIdBar = idBarang.get(i);
 				jmlPesan = (int)table.getValueAt(i, 2);
@@ -301,7 +305,7 @@ public class FormPengembalian extends JFrame {
 						}
 						
 						bayarAwal =(int) hargaPerBar*jmlPesan*lamaPinjam;
-						denda = (int)(hargaPerBar*lambat*jmlPesan)+(rugiPerBar*rusak)+(rugiPerBar*hilang*2);
+						denda = (int)(hargaPerBar*lambat*jmlPesan)+(rusakPerBar*rusak)+(hilangPerBar*hilang);
 						bayarItem = bayarAwal+denda;
 						
 						if (currIdPelanggan!=idBefore) {
@@ -408,6 +412,10 @@ public class FormPengembalian extends JFrame {
 		contentPane.add(textFieldNamaPeminjam);
 		textFieldNamaPeminjam.setColumns(10);
 		
+		JButton btnKeMenu = new JButton("Kembali Ke Menu");
+		btnKeMenu.setBounds(439, 637, 130, 23);
+		contentPane.add(btnKeMenu);
+		
 		
 		textFieldIdBar.disable();
 		textFieldJmlPinjam.disable();
@@ -423,11 +431,11 @@ public class FormPengembalian extends JFrame {
 			Connection konek = Koneksi.getKoneksi();
 //			Statement state = konek.createStatement();
 			PreparedStatement p =null;
-			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rugi,pesanan.id_pesanan FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL ORDER BY pesanan.`tanggal_selesai`";
+			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL ORDER BY pesanan.`tanggal_selesai`";
 			
 			if (!textFieldIdPel.getText().equals("")) {
 				int id = Integer.parseInt(textFieldIdPel.getText());
-				query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rugi,pesanan.id_pesanan FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.id_pelanggan = ? ORDER BY pesanan.`tanggal_selesai`";
+				query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.id_pelanggan = ? ORDER BY pesanan.`tanggal_selesai`";
 				p = konek.prepareStatement(query);
 				p.setInt(1, id);
 			} else {
@@ -452,8 +460,9 @@ public class FormPengembalian extends JFrame {
 				listMulai.add(rs.getString(8));
 				listHarga.add(rs.getInt(9));
 				listStok.add(rs.getInt(10));
-				gantiRugi.add(rs.getInt(11));
+				gantiRusak.add(rs.getInt(11));
 				idPesanan.add(rs.getInt(12));
+				gantiHilang.add(rs.getInt(13));
 				
 				
 				tabelModel.addRow(obj);
@@ -471,13 +480,13 @@ public class FormPengembalian extends JFrame {
 		
 		try {
 			Connection konek = Koneksi.getKoneksi();
-			String query = "Update pesanan set denda=?,tanggal_kembali=?,jumlah_hilang=?,jumlah_rusak=? where id_pesanan=?";
+			String query = "Update pesanan set tanggal_kembali=?,jumlah_hilang=?,jumlah_rusak=? where id_pesanan=?";
 			PreparedStatement p = konek.prepareStatement(query);
-			p.setInt(1, denda);
-			p.setString(2, tglKembaliStr);
-			p.setInt(3, hilang);
-			p.setInt(4, rusak);
-			p.setInt(5, currIdPesan);
+//			p.setInt(1, denda);
+			p.setString(1, tglKembaliStr);
+			p.setInt(2, hilang);
+			p.setInt(3, rusak);
+			p.setInt(4, currIdPesan);
 
 			p.executeUpdate();
 			p.close();
@@ -515,7 +524,8 @@ public class FormPengembalian extends JFrame {
 		idBarang.removeAll(idBarang);
 		listHarga.removeAll(listHarga);
 		listStok.removeAll(listStok);
-		gantiRugi.removeAll(gantiRugi);
+		gantiRusak.removeAll(gantiRusak);
+		gantiHilang.removeAll(gantiHilang);
 		idPesanan.removeAll(idPesanan);
 
 	}
