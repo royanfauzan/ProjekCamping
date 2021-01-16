@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class TambahBarang extends JFrame {
 	private JComboBox comboJenis;
 	private JComboBox comboHarga;
 	private JComboBox comboJenisTambah;
-	private String header2[] = {"id Barang","Jenis Barang","Nama Barang","Stok","Harga","Rusak","Hilang"};
+	private String header2[] = {"Kode Barang","Jenis Barang","Nama Barang","Stok","Harga","Rusak","Hilang"};
 	private JTextField textFieldJenis;
 	private JLabel lblNewLabel_3;
 	private JTextField textFieldKode;
@@ -58,9 +59,13 @@ public class TambahBarang extends JFrame {
 	private JLabel lblNewLabel_8;
 	private JTextField textFieldRusak;
 	private JLabel lblNewLabel_9;
-	private JTextField textField_1;
+	private JTextField textFieldHilang;
 	private JButton btnNewButton_1;
 	private JScrollPane scrollPane_1;
+	
+	private JTextArea textArea;
+	private String kalimat;
+	private Boolean kembar;
 
 	/**
 	 * Launch the application.
@@ -92,6 +97,7 @@ public class TambahBarang extends JFrame {
 	public TambahBarang() {
 		
 		listKode = new ArrayList<String>();
+		kalimat = "Status Penambahan Barang \n";
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 654, 750);
@@ -99,6 +105,19 @@ public class TambahBarang extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+
+		
+		
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(350, 510, 278, 153);
+		contentPane.add(scrollPane_1);
+		
+		textArea = new JTextArea();
+		scrollPane_1.setViewportView(textArea);
+		
+		textArea.setText(kalimat);
+		
 		
 		JLabel lblKatalogToko = new JLabel("Form Barang");
 		lblKatalogToko.setFont(new Font("Century Gothic", Font.BOLD, 17));
@@ -110,12 +129,12 @@ public class TambahBarang extends JFrame {
 		contentPane.add(scrollPane);
 		
 		textFieldKode = new JTextField();
-		textFieldKode.setBounds(117, 428, 77, 20);
+		textFieldKode.setBounds(149, 428, 77, 20);
 		contentPane.add(textFieldKode);
 		textFieldKode.setColumns(10);
 		
 		textFieldJenis = new JTextField();
-		textFieldJenis.setBounds(117, 397, 86, 20);
+		textFieldJenis.setBounds(149, 397, 86, 20);
 		contentPane.add(textFieldJenis);
 		textFieldJenis.setColumns(10);
 		
@@ -135,11 +154,12 @@ public class TambahBarang extends JFrame {
 					textFieldJenis.repaint();
 					
 					
-					int inx = comboJenisTambah.getSelectedIndex();
-					String kodeHuruf = listKode.get(inx);
+//					int inx = comboJenisTambah.getSelectedIndex();
+					String kodeHuruf = pengambilIdBa();
 					StringBuffer sb = new StringBuffer(kodeHuruf);
 					sb.delete(kodeHuruf.length()-3,kodeHuruf.length());
 					textFieldKode.setText(sb.toString());
+					textFieldJenis.setText(comboJenisTambah.getSelectedItem().toString());
 				}
 			}
 		});
@@ -165,7 +185,7 @@ public class TambahBarang extends JFrame {
 		contentPane.add(comboJenis);
 		
 
-		comboJenisTambah.setBounds(117, 369, 116, 20);
+		comboJenisTambah.setBounds(149, 366, 116, 20);
 		contentPane.add(comboJenisTambah);
 		
 		JLabel lblNewLabel = new JLabel("Jenis Barang");
@@ -237,7 +257,7 @@ public class TambahBarang extends JFrame {
 				}
 			}
 		});
-		chckbxJenis.setBounds(239, 368, 97, 23);
+		chckbxJenis.setBounds(271, 368, 97, 23);
 		contentPane.add(chckbxJenis);
 		
 
@@ -251,7 +271,7 @@ public class TambahBarang extends JFrame {
 		contentPane.add(lblNewLabel_4);
 		
 		textFieldNama = new JTextField();
-		textFieldNama.setBounds(117, 468, 86, 20);
+		textFieldNama.setBounds(149, 468, 86, 20);
 		contentPane.add(textFieldNama);
 		textFieldNama.setColumns(10);
 		
@@ -260,7 +280,7 @@ public class TambahBarang extends JFrame {
 		contentPane.add(lblNewLabel_5);
 		
 		textFieldStok = new JTextField();
-		textFieldStok.setBounds(117, 510, 46, 20);
+		textFieldStok.setBounds(149, 510, 46, 20);
 		contentPane.add(textFieldStok);
 		textFieldStok.setColumns(10);
 		
@@ -269,12 +289,12 @@ public class TambahBarang extends JFrame {
 		contentPane.add(lblNewLabel_6);
 		
 		textFieldHarga = new JTextField();
-		textFieldHarga.setBounds(117, 547, 66, 20);
+		textFieldHarga.setBounds(149, 547, 66, 20);
 		contentPane.add(textFieldHarga);
 		textFieldHarga.setColumns(10);
 		
 		lblNewLabel_7 = new JLabel("/ Hari");
-		lblNewLabel_7.setBounds(193, 550, 46, 14);
+		lblNewLabel_7.setBounds(230, 550, 46, 14);
 		contentPane.add(lblNewLabel_7);
 		
 		lblNewLabel_8 = new JLabel("Ganti Rusak");
@@ -282,7 +302,7 @@ public class TambahBarang extends JFrame {
 		contentPane.add(lblNewLabel_8);
 		
 		textFieldRusak = new JTextField();
-		textFieldRusak.setBounds(117, 578, 86, 20);
+		textFieldRusak.setBounds(149, 581, 86, 20);
 		contentPane.add(textFieldRusak);
 		textFieldRusak.setColumns(10);
 		
@@ -290,21 +310,85 @@ public class TambahBarang extends JFrame {
 		lblNewLabel_9.setBounds(30, 612, 77, 14);
 		contentPane.add(lblNewLabel_9);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(117, 609, 86, 20);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
+		textFieldHilang = new JTextField();
+		textFieldHilang.setBounds(149, 609, 86, 20);
+		contentPane.add(textFieldHilang);
+		textFieldHilang.setColumns(10);
 		
 		btnNewButton_1 = new JButton("Tambah Barang");
-		btnNewButton_1.setBounds(117, 640, 146, 23);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String TbjenisBar = textFieldJenis.getText();
+				String TbkodeBarang = textFieldKode.getText();
+				String TbnamaBarang = textFieldNama.getText();
+				String TbstokBarang = textFieldStok.getText();
+				String TbhargaBarang = textFieldHarga.getText();
+//				String TbgantiRusak = textFieldRusak.getText();
+//				String TbgantiHilang = textFieldHilang.getText();
+				
+				if (TbkodeBarang.length()>=4&&
+					!TbnamaBarang.equals("")&&
+					!textFieldStok.getText().equals("")&&
+					!textFieldHarga.getText().equals("")&&
+					!textFieldRusak.getText().equals("")&&
+					!textFieldHilang.getText().equals("")) {
+					
+					if (comboJenisTambah.getSelectedIndex()>0||chckbxJenis.isSelected()) {
+						if (!TbjenisBar.equals("")) {
+							tambahDataBarang();
+							
+							if (kembar) {
+								kalimat+="ERROR***||--"+"Kode Barang: "+TbkodeBarang+" Sudah Ada di Database \n";
+								textArea.setText(kalimat);
+							}else {
+								kalimat+=TbkodeBarang+"|"+TbjenisBar+"|"+TbstokBarang+"|"+TbhargaBarang+"|--"+"Berhasil Diinput\n";
+								textArea.setText(kalimat);
+								kosongkanInput();
+								getDataJenis();
+							}
+							
+
+							kosongkanTabel();
+							getDataTabel();
+							
+						} else {
+
+						}
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Pilih/Isi Jenis Barang!") ;
+					}
+					
+					
+					
+				} else {
+					JOptionPane.showMessageDialog(null, "Data Barang Tidak Lengkap!") ;
+				}
+			}
+		});
+		btnNewButton_1.setBounds(117, 651, 146, 23);
 		contentPane.add(btnNewButton_1);
 		
-		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(350, 510, 278, 153);
-		contentPane.add(scrollPane_1);
+
 		
-		JTextArea textArea = new JTextArea();
-		scrollPane_1.setViewportView(textArea);
+
+		
+		JLabel lblNewLabel_10 = new JLabel("Rp.");
+		lblNewLabel_10.setBounds(108, 584, 26, 14);
+		contentPane.add(lblNewLabel_10);
+		
+		JLabel lblNewLabel_10_1 = new JLabel("Rp.");
+		lblNewLabel_10_1.setBounds(108, 612, 26, 14);
+		contentPane.add(lblNewLabel_10_1);
+		
+		JLabel lblNewLabel_11 = new JLabel("Buah");
+		lblNewLabel_11.setBounds(217, 513, 46, 14);
+		contentPane.add(lblNewLabel_11);
+		
+		JLabel lblNewLabel_10_2 = new JLabel("Rp.");
+		lblNewLabel_10_2.setBounds(108, 550, 26, 14);
+		contentPane.add(lblNewLabel_10_2);
 		
 
 		
@@ -392,12 +476,12 @@ public class TambahBarang extends JFrame {
 		try {
 			Connection konek = Koneksi.getKoneksi();
 			Statement state = konek.createStatement();
-			String query = "SELECT DISTINCT jenis_barang,id_barang FROM barang";
+			String query = "SELECT DISTINCT jenis_barang FROM barang";
 			comboJenis.removeAllItems();
 			comboJenisTambah.removeAllItems();
 			
-			listKode.removeAll(listKode);
-			listKode.add("");
+//			listKode.removeAll(listKode);
+//			listKode.add("");
 			
 			comboJenis.addItem("all");
 			comboJenisTambah.addItem("all");
@@ -405,12 +489,81 @@ public class TambahBarang extends JFrame {
 			while (rs.next()) {
 				comboJenis.addItem(rs.getString(1));
 				comboJenisTambah.addItem(rs.getString(1));
-				listKode.add(rs.getString(2));
+//				listKode.add(rs.getString(2));
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+	}
+	
+	public String pengambilIdBa() {
+		String a=comboJenisTambah.getSelectedItem().toString();
+		try {
+			Connection konek = Koneksi.getKoneksi();
+			String query = "SELECT id_barang FROM barang where jenis_barang=? ORDER BY id_barang DESC LIMIT 1";
+			PreparedStatement p = konek.prepareStatement(query);
+			p.setString(1, a);
+			ResultSet hasil = p.executeQuery();
+			while (hasil.next()) {
+				a = hasil.getString(1);	
+			}
+			hasil.close();
+			p.close();
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.print(e);
+		}
+		return a;
+	}
+	
+	private void tambahDataBarang(){
+		kembar = false;
+		String jenisBar = textFieldJenis.getText();
+//		if (chckbxJenis.isSelected()) {
+//			jenisBar=textFieldJenis.getText();
+//		}else {
+//			jenisBar=comboJenisTambah.getSelectedItem().toString();
+//		}
+		String kodeBarang = textFieldKode.getText();
+		String namaBarang = textFieldNama.getText();
+		int stokBarang = Integer.parseInt(textFieldStok.getText());
+		int hargaBarang = Integer.parseInt(textFieldHarga.getText());
+		int gantiRusak = Integer.parseInt(textFieldRusak.getText());
+		int gantiHilang = Integer.parseInt(textFieldHilang.getText());
+		
+		try {
+			Connection konek = Koneksi.getKoneksi();
+			String query = "INSERT INTO barang VALUES(?,?,?,?,?,?,?)";
+			PreparedStatement p = konek.prepareStatement(query);
+			p.setString(1, kodeBarang);
+			p.setString(2, jenisBar);
+			p.setString(3, namaBarang);
+			p.setInt(4, stokBarang);
+			p.setInt(5, hargaBarang);
+			p.setInt(6, gantiRusak);
+			p.setInt(7, gantiHilang);
+			p.executeUpdate();
+			p.close();
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+			kembar=true;
+			System.out.print(e);
+		}
+		
+	}
+	
+	private void kosongkanInput() {
+		textFieldJenis.setText("");
+		textFieldKode.setText("");
+		textFieldNama.setText("");
+		textFieldStok.setText("");
+		textFieldHarga.setText("");
+		textFieldRusak.setText("");
+		textFieldHilang.setText("");
+		
+		comboJenisTambah.setSelectedIndex(0);
 	}
 	
 	private void kosongkanTabel() {

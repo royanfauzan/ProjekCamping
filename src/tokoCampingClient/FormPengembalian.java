@@ -1,6 +1,7 @@
 package tokoCampingClient;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -414,7 +415,10 @@ public class FormPengembalian extends JFrame {
 		
 		JButton btnKeMenu = new JButton("Kembali Ke Menu");
 		btnKeMenu.setBounds(439, 637, 130, 23);
+		btnKeMenu.setBackground(new Color(230,0,35));
+		btnKeMenu.setOpaque(true);
 		contentPane.add(btnKeMenu);
+		
 		
 		
 		textFieldIdBar.disable();
