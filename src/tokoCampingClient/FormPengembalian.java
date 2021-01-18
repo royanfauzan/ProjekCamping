@@ -435,11 +435,11 @@ public class FormPengembalian extends JFrame {
 			Connection konek = Koneksi.getKoneksi();
 //			Statement state = konek.createStatement();
 			PreparedStatement p =null;
-			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL ORDER BY pesanan.`tanggal_selesai`";
+			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.konfirm=1 ORDER BY pesanan.`tanggal_selesai`";
 			
 			if (!textFieldIdPel.getText().equals("")) {
 				int id = Integer.parseInt(textFieldIdPel.getText());
-				query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.id_pelanggan = ? ORDER BY pesanan.`tanggal_selesai`";
+				query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp,pelanggan.id_pelanggan,barang.id_barang,pesanan.tanggal_mulai,barang.harga_barang,barang.stok_barang,barang.ganti_rusak,pesanan.id_pesanan,barang.ganti_hilang FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.konfirm=1 AND pesanan.id_pelanggan = ? ORDER BY pesanan.`tanggal_selesai`";
 				p = konek.prepareStatement(query);
 				p.setInt(1, id);
 			} else {

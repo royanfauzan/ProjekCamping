@@ -226,7 +226,7 @@ public class TampilanClient extends JFrame {
 		
 		
 		
-		JButton tombolDaftar = new JButton("Daftar");
+		JButton tombolDaftar = new JButton("Ambil Kode");
 		tombolDaftar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				daftar();
@@ -266,7 +266,7 @@ public class TampilanClient extends JFrame {
 				Calendar cal = Calendar.getInstance();
 				
 				cal.setTime(tanggal);
-				cal.add(Calendar.DATE, lama);
+				cal.add(Calendar.DATE, lama-1);
 				
 				tanggal2 = cal.getTime();
 				
@@ -431,7 +431,7 @@ public class TampilanClient extends JFrame {
 		{
 			Connection konek = Koneksi.getKoneksi();
 			Statement state = konek.createStatement();
-			String query = "SELECT jenis_barang,nama_barang,stok_barang,harga_barang,id_barang FROM barang";
+			String query = "SELECT jenis_barang,nama_barang,stok_barang,harga_barang,id_barang FROM barang WHERE stok_barang>0";
 			ResultSet rs = state.executeQuery(query);
 			while(rs.next())
 			{
