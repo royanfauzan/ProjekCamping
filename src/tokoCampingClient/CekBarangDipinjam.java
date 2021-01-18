@@ -104,7 +104,7 @@ public class CekBarangDipinjam extends JFrame {
 		try {
 			Connection konek = Koneksi.getKoneksi();
 			Statement state = konek.createStatement();
-			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL ORDER BY pesanan.`tanggal_selesai`";
+			String query = "SELECT pelanggan.nama_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_selesai,pelanggan.no_telp FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan=pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.`tanggal_kembali` IS NULL AND pesanan.konfirm=1 ORDER BY pesanan.`tanggal_selesai`";
 			ResultSet rs = state.executeQuery(query);
 			while(rs.next())
 			{

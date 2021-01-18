@@ -25,7 +25,7 @@ public class Login extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtuserid;
-	private TampilanClient fmenu;
+	private TampilanMenuAdmin fmenu;
 	private JPasswordField passwordFieldPass;
 
 	/**
@@ -85,13 +85,13 @@ public class Login extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(cekuser()){
-					fmenu = new TampilanClient();
-					fmenu.setUsername(txtuserid.getText());
-					
-					fmenu.setTF(txtuserid.getText(), passwordFieldPass.getText());
-					
-					fmenu.username=txtuserid.getText();	
-					fmenu.textFieldNama.setText(txtuserid.getText());
+					fmenu = new TampilanMenuAdmin();
+//					fmenu.setUsername(txtuserid.getText());
+//					
+//					fmenu.setTF(txtuserid.getText(), passwordFieldPass.getText());
+//					
+//					fmenu.username=txtuserid.getText();	
+//					fmenu.textFieldNama.setText(txtuserid.getText());
 				
 					fmenu.setLocationRelativeTo(null);
 					fmenu.setVisible(true);

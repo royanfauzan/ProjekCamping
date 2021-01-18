@@ -84,7 +84,7 @@ public class LaporanPendapatan extends JFrame {
 		
 		JLabel lblLaporanPendapatan = new JLabel("Laporan Pendapatan");
 		lblLaporanPendapatan.setFont(new Font("Century Gothic", Font.BOLD, 17));
-		lblLaporanPendapatan.setBounds(207, 11, 196, 35);
+		lblLaporanPendapatan.setBounds(389, 11, 196, 35);
 		contentPane.add(lblLaporanPendapatan);
 		
 		JLabel lblNewLabel = new JLabel("Mulai Dari :");
