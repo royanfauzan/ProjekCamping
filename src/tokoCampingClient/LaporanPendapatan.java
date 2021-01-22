@@ -9,6 +9,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -43,6 +46,9 @@ public class LaporanPendapatan extends JFrame {
 	private DefaultTableModel tabelModelHR;
 	private String tglMulai,tglSelesai;
 	private DefaultTableCellRenderer rightRenderer;
+	private String NamaUser;
+	private int lvlUser;
+	
 
 	/**
 	 * Launch the application.
@@ -191,6 +197,45 @@ public class LaporanPendapatan extends JFrame {
 		tableHilangRusak = new JTable();
 		tableHilangRusak.setModel(tabelModelHR);
 		scrollPane_3.setViewportView(tableHilangRusak);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Admin");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuAdmin frameMenu = new TampilanMenuAdmin();
+				frameMenu.setVisible(true);
+				frameMenu.setLabelNama(NamaUser, lvlUser);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Menu Utama");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameUtama = new TampilanMenuUtama();
+				frameUtama.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
 	}
 	
 	private void kosongkanTabel() {
@@ -353,5 +398,10 @@ public class LaporanPendapatan extends JFrame {
 		obj[1] = totalPendapatan;
 		tabelModelPendapatan.addRow(obj);
 		
+	}
+	
+	public void setLabelNama(String a,int b) {
+		this.NamaUser=a;
+		this.lvlUser=b;
 	}
 }

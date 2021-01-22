@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -147,6 +150,33 @@ public class TampilanKatalog extends JFrame {
 		table = new JTable();
 		table.setModel(tabelModel);
 		scrollPane.setViewportView(table);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Utama");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameMenu = new TampilanMenuUtama();
+				frameMenu.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
 		
 		
 		try {

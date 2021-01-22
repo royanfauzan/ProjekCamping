@@ -36,6 +36,9 @@ import javax.swing.JTextArea;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 public class TampilanClient extends JFrame {
 
@@ -56,7 +59,7 @@ public class TampilanClient extends JFrame {
 	private JTextArea textArea;
 	private int id,stok,bayar,total_bayar,hargaPer,jumlah,lama,konfirm;
 	private String idBarang;
-	private String kalimat;
+	private String kalimat,pad;
 	private String tanggal_mulai,tanggal_selesai;
 	private ArrayList<String> nyoba;
 	private JDateChooser dateChooserpinjam;
@@ -66,6 +69,8 @@ public class TampilanClient extends JFrame {
 	private SimpleDateFormat pinjem ;
 	private JTextField textFieldHari;
 	private JTextField textFieldNoTelp;
+	
+	private Date tglSkrg;
 
 	/**
 	 * Launch the application.
@@ -96,8 +101,10 @@ public class TampilanClient extends JFrame {
 //		initComponen("");
 		
 //		mainnya hebat
+		pad=" ";
 
 		nyoba = new ArrayList<String>();
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 722, 572);
@@ -106,18 +113,21 @@ public class TampilanClient extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		tglSkrg = new Date();
+		
+		
 		JLabel lblNewLabel = new JLabel("Nama.");
-		lblNewLabel.setBounds(20, 11, 46, 14);
+		lblNewLabel.setBounds(20, 30, 46, 14);
 		contentPane.add(lblNewLabel);
 		
 		textFieldNama = new JTextField();
-		textFieldNama.setBounds(20, 26, 145, 19);
+		textFieldNama.setBounds(20, 45, 145, 19);
 		contentPane.add(textFieldNama);
 		textFieldNama.setColumns(10);
 //		textFieldNama.setText(a);
 		
 		textFieldIdUser = new JTextField();
-		textFieldIdUser.setBounds(633, 26, 40, 20);
+		textFieldIdUser.setBounds(633, 45, 40, 20);
 		contentPane.add(textFieldIdUser);
 		textFieldIdUser.setColumns(10);
 		textFieldIdUser.setText(username);
@@ -125,7 +135,7 @@ public class TampilanClient extends JFrame {
 
 		
 		JLabel lblNewLabel_5 = new JLabel("Kode Peminjaman");
-		lblNewLabel_5.setBounds(525, 29, 109, 14);
+		lblNewLabel_5.setBounds(525, 48, 109, 14);
 		contentPane.add(lblNewLabel_5);
 		
 		JLabel lblNewLabel_1 = new JLabel("List Barang");
@@ -229,53 +239,136 @@ public class TampilanClient extends JFrame {
 		JButton tombolDaftar = new JButton("Ambil Kode");
 		tombolDaftar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				daftar();
-				id =pengambilIdPe();
-				textFieldIdUser.setText(""+id);
-				getDataTabel();
+				
+				if (!textFieldNama.getText().equals("")&&!textFieldNoTelp.getText().equals("")) {
+					if (!cekuser()) {
+						daftar();
+						id =pengambilIdPe();
+					}
+									
+					textFieldIdUser.setText(""+id);
+					getDataTabel();
+				} else {
+					JOptionPane.showMessageDialog(null, "Lengkapi nama dan nomor Telepon Terlebih Dahulu!") ;
+				}
+				
+				
 			}
 		});
-		tombolDaftar.setBounds(350, 25, 89, 23);
+		tombolDaftar.setBounds(350, 44, 89, 23);
 		contentPane.add(tombolDaftar);
 		
-		kalimat="Barang \t | Hari"+"\t"+"Harga"+"\t"+"Kembali";
+		kalimat="Barang \t\t | Hari"+"\t"+"|Harga"+"\t"+"Kembali";
 		textArea.setText(kalimat);
 		total_bayar=0;
 		konfirm=0;
 		JButton tombolPesan = new JButton("Pesan");
 		tombolPesan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String tanggalPesan = new SimpleDateFormat("yyyy-MM-dd").format(dateChooserpinjam.getDate());
+				String tanggalSekarang =  new SimpleDateFormat("yyyy-MM-dd").format(tglSkrg);
 				
+				tanggalPesan = tanggalPesan.replaceAll("[-]", "");
+				int inpesan = Integer.parseInt(tanggalPesan);
+				tanggalSekarang = tanggalSekarang.replaceAll("[-]", "");
+				int inskrg = Integer.parseInt(tanggalSekarang);
+				System.out.println(""+inpesan);
+				System.out.println(""+inskrg);
+				
+				System.out.println(tanggalSekarang);
 				jumlah = Integer.parseInt(textFieldJumlah.getText());
-				lama= Integer.parseInt(textFieldHari.getText());
-				bayar = hargaPer*jumlah*lama;
 				
-				total_bayar+=bayar;
 				
+				
+				if (!textFieldBarang.getText().equals("")&&!textFieldJumlah.getText().equals("")&&!textFieldIdUser.getText().equals("")&&!textFieldHari.getText().equals("")&&dateChooserpinjam.getDate()!=null&&inpesan>=inskrg) {
+					if (jumlah<stok) {
+						pad=" ";
+						
+						lama= Integer.parseInt(textFieldHari.getText());
+						bayar = hargaPer*jumlah*lama;
+						
+						total_bayar+=bayar;
+						
 
 
-				pinjem = new SimpleDateFormat("yyyy-MM-dd");
-				String pengambil=gettanggalan();
-				Date tanggal = new Date();
-				Date tanggal2 = new Date();
+						pinjem = new SimpleDateFormat("yyyy-MM-dd");
+						String pengambil=gettanggalan();
+						Date tanggal = new Date();
+						Date tanggal2 = new Date();
+						
+						tanggal = dateChooserpinjam.getDate();
+						
+						tanggal_mulai = pinjem.format(tanggal);
+						
+						Calendar cal = Calendar.getInstance();
+						
+						cal.setTime(tanggal);
+						cal.add(Calendar.DATE, lama);
+						
+						tanggal2 = cal.getTime();
+						
+						tanggal_selesai = pinjem.format(tanggal2);
+						
+						if (textFieldBarang.getText().length()<14) {
+							pad="\t";
+						}
+						
+						kalimat+="\n"+jumlah+textFieldBarang.getText()+pad+" |"+lama+"h"+"\t"+bayar+"\t"+tanggal_selesai;
+						textArea.setText(kalimat);
+						
+						pesan();
+						kosongkanInput();
+						
+					}else if(inpesan>inskrg) {
+						pad=" ";
+						
+						lama= Integer.parseInt(textFieldHari.getText());
+						bayar = hargaPer*jumlah*lama;
+						
+						total_bayar+=bayar;
+						
+
+
+						pinjem = new SimpleDateFormat("yyyy-MM-dd");
+						String pengambil=gettanggalan();
+						Date tanggal = new Date();
+						Date tanggal2 = new Date();
+						
+						tanggal = dateChooserpinjam.getDate();
+						
+						tanggal_mulai = pinjem.format(tanggal);
+						
+						Calendar cal = Calendar.getInstance();
+						
+						cal.setTime(tanggal);
+						cal.add(Calendar.DATE, lama);
+						
+						tanggal2 = cal.getTime();
+						
+						tanggal_selesai = pinjem.format(tanggal2);
+						
+						if (textFieldBarang.getText().length()<14) {
+							pad="\t";
+						}
+						
+						kalimat+="\n"+jumlah+textFieldBarang.getText()+pad+" |"+lama+"h"+"\t"+bayar+"\t"+tanggal_selesai;
+						textArea.setText(kalimat);
+						
+						pesan();
+						kosongkanInput();
+					} else {
+						JOptionPane.showMessageDialog(null, "Jumlah Pesan Melebihi Stok Hari Ini!") ;
+					}
+					
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Data Pesanan Tidak Lengkap/Tidak Valid!") ;
+				}
 				
-				tanggal = dateChooserpinjam.getDate();
 				
-				tanggal_mulai = pinjem.format(tanggal);
+			
 				
-				Calendar cal = Calendar.getInstance();
-				
-				cal.setTime(tanggal);
-				cal.add(Calendar.DATE, lama-1);
-				
-				tanggal2 = cal.getTime();
-				
-				tanggal_selesai = pinjem.format(tanggal2);
-				
-				kalimat+="\n"+jumlah+textFieldBarang.getText()+" |"+lama+"h"+"\t"+bayar+"\t"+tanggal_selesai;
-				textArea.setText(kalimat);
-				
-				pesan();
+
 				
 //				pinjem = new SimpleDateFormat("yyyy-MM-dd");
 //				String pengambil=gettanggalan();
@@ -312,9 +405,11 @@ public class TampilanClient extends JFrame {
 		JButton tombolSelesai = new JButton("Hitung TOTAL");
 		tombolSelesai.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				textFieldHari.setText("");
+				dateChooserpinjam.setDate(null);
 				
-				kalimat+="\n\n"+"\tTotal Bayar \t:"+total_bayar;
-				textArea.setText(kalimat);
+				
+				textArea.setText(kalimat+"\n"+"\tTotal Bayar \t: Rp."+total_bayar);
 			}
 		});
 		tombolSelesai.setBounds(324, 501, 115, 23);
@@ -334,13 +429,40 @@ public class TampilanClient extends JFrame {
 		contentPane.add(dateChooserpinjam);
 		
 		textFieldNoTelp = new JTextField();
-		textFieldNoTelp.setBounds(175, 26, 145, 20);
+		textFieldNoTelp.setBounds(175, 45, 145, 20);
 		contentPane.add(textFieldNoTelp);
 		textFieldNoTelp.setColumns(10);
 		
 		JLabel lblNewLabel_10 = new JLabel("No.Telpon");
-		lblNewLabel_10.setBounds(175, 11, 102, 14);
+		lblNewLabel_10.setBounds(175, 30, 102, 14);
 		contentPane.add(lblNewLabel_10);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Utama");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameMenu = new TampilanMenuUtama();
+				frameMenu.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
 		
 		
 		
@@ -513,6 +635,33 @@ public class TampilanClient extends JFrame {
 		return ku;
 	}
 	
+	public boolean cekuser(){
+		boolean adauser=false;
+		String userid=this.textFieldNama.getText();
+		String pwd = this.textFieldNoTelp.getText();
+		
+		try
+		{
+			Connection konek = Koneksi.getKoneksi();
+			String query = "SELECT id_Pelanggan FROM pelanggan WHERE nama_pelanggan=? and no_telp=?";
+			PreparedStatement p = konek.prepareStatement(query);
+			p.setString(1, userid);
+			p.setString(2, pwd);
+			
+			ResultSet rs = p.executeQuery();
+			while(rs.next())
+			{	
+				id = rs.getInt(1);
+				adauser=true;
+			}
+			rs.close();
+		}
+		catch(Exception ex)
+		{
+		}
+		return (adauser);
+	}
+	
 	public void setUsername(String a) {
 		this.username=a;
 		System.out.println(a);
@@ -528,5 +677,15 @@ public class TampilanClient extends JFrame {
 	public void setTF(String a,String b) {
 		this.textFieldJumlah.setText(a);
 		this.textFieldIdUser.setText(b);
+	}
+	
+	private void kosongkanInput() {
+		textFieldBarang.setText("");
+		
+		textFieldJumlah.setText("");
+		textFieldStok.setText("");
+		
+		
+		
 	}
 }

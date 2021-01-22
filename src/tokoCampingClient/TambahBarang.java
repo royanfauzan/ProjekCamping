@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -66,6 +67,9 @@ public class TambahBarang extends JFrame {
 	private JTextArea textArea;
 	private String kalimat;
 	private Boolean kembar;
+	
+	private String NamaUser;
+	private int lvlUser;
 
 	/**
 	 * Launch the application.
@@ -390,6 +394,45 @@ public class TambahBarang extends JFrame {
 		lblNewLabel_10_2.setBounds(108, 550, 26, 14);
 		contentPane.add(lblNewLabel_10_2);
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Admin");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuAdmin frameMenu = new TampilanMenuAdmin();
+				frameMenu.setVisible(true);
+				frameMenu.setLabelNama(NamaUser, lvlUser);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Menu Utama");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameUtama = new TampilanMenuUtama();
+				frameUtama.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
+		
 
 		
 		
@@ -569,5 +612,12 @@ public class TambahBarang extends JFrame {
 	private void kosongkanTabel() {
 		tabelModel.getDataVector().removeAllElements();
 		tabelModel.fireTableDataChanged();
+	}
+	
+
+	
+	public void setLabelNama(String a,int b) {
+		this.NamaUser=a;
+		this.lvlUser=b;
 	}
 }

@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -19,6 +20,7 @@ import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
+import javax.swing.ImageIcon;
 
 
 public class Login extends JFrame {
@@ -27,6 +29,8 @@ public class Login extends JFrame {
 	private JTextField txtuserid;
 	private TampilanMenuAdmin fmenu;
 	private JPasswordField passwordFieldPass;
+	private String NamaUser;
+	private int lvlUser;
 
 	/**
 	 * Launch the application.
@@ -57,27 +61,27 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 404, 303);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblUserId = new JLabel("User id");
-		lblUserId.setBounds(65, 45, 46, 14);
+		lblUserId.setBounds(73, 96, 46, 14);
 		contentPane.add(lblUserId);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(65, 70, 46, 14);
+		lblPassword.setBounds(73, 121, 46, 14);
 		contentPane.add(lblPassword);
 		
 		txtuserid = new JTextField();
-		txtuserid.setBounds(146, 42, 108, 20);
+		txtuserid.setBounds(154, 93, 108, 20);
 		contentPane.add(txtuserid);
 		txtuserid.setColumns(10);
 		
 		passwordFieldPass = new JPasswordField();
-		passwordFieldPass.setBounds(146, 67, 108, 20);
+		passwordFieldPass.setBounds(154, 118, 108, 20);
 		passwordFieldPass.setEchoChar('*');
 		contentPane.add(passwordFieldPass);
 		
@@ -92,13 +96,17 @@ public class Login extends JFrame {
 //					
 //					fmenu.username=txtuserid.getText();	
 //					fmenu.textFieldNama.setText(txtuserid.getText());
-				
+					fmenu.setLabelNama(NamaUser, lvlUser);
 					fmenu.setLocationRelativeTo(null);
 					fmenu.setVisible(true);
+					setVisible(false);
+					dispose();
+				}else {
+					JOptionPane.showMessageDialog(null, "User Id atau Password Salah!") ;
 				}
 			}
 		});
-		btnLogin.setBounds(146, 123, 89, 23);
+		btnLogin.setBounds(154, 174, 89, 23);
 		contentPane.add(btnLogin);
 		
 		
@@ -113,8 +121,25 @@ public class Login extends JFrame {
 				}
 			}
 		});
-		chckbxPass.setBounds(146, 94, 141, 23);
+		chckbxPass.setBounds(154, 145, 141, 23);
 		contentPane.add(chckbxPass);
+		
+		JButton btnNewButton = new JButton("BATAL");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameMenu = new TampilanMenuUtama();
+				frameMenu.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		btnNewButton.setBounds(154, 208, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Login.class.getResource("/iconTokoCamping/user.png")));
+		lblNewLabel.setBounds(153, 11, 81, 74);
+		contentPane.add(lblNewLabel);
 	}
 	
 	public boolean cekuser(){
@@ -125,7 +150,7 @@ public class Login extends JFrame {
 		try
 		{
 			Connection konek = Koneksi.getKoneksi();
-			String query = "SELECT userid,password FROM user WHERE userid=? and password=?";
+			String query = "SELECT userid,password,akseslv FROM user WHERE userid=? and password=?";
 			PreparedStatement p = konek.prepareStatement(query);
 			p.setString(1, userid);
 			p.setString(2, pwd);
@@ -134,6 +159,8 @@ public class Login extends JFrame {
 			while(rs.next())
 			{	
 				adauser=true;
+				NamaUser=rs.getString(1);
+				lvlUser=rs.getInt(3);
 			}
 			rs.close();
 		}

@@ -8,6 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,15 +73,15 @@ public class CekPinjamanClient extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("Cek Pinjaman");
 		lblNewLabel.setFont(new Font("Century Gothic", Font.BOLD, 17));
-		lblNewLabel.setBounds(10, 11, 146, 35);
+		lblNewLabel.setBounds(10, 30, 146, 35);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Kode Peminjaman");
-		lblNewLabel_1.setBounds(20, 51, 112, 14);
+		lblNewLabel_1.setBounds(22, 76, 112, 14);
 		contentPane.add(lblNewLabel_1);
 		
 		textFieldIdUser = new JTextField();
-		textFieldIdUser.setBounds(128, 48, 100, 20);
+		textFieldIdUser.setBounds(130, 73, 100, 20);
 		contentPane.add(textFieldIdUser);
 		textFieldIdUser.setColumns(10);
 		
@@ -88,12 +92,39 @@ public class CekPinjamanClient extends JFrame {
 				getTabelPinjaman();
 			}
 		});
-		btnNewButton.setBounds(238, 47, 63, 23);
+		btnNewButton.setBounds(240, 72, 63, 23);
 		contentPane.add(btnNewButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(20, 106, 462, 210);
 		contentPane.add(scrollPane);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Utama");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameMenu = new TampilanMenuUtama();
+				frameMenu.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
 		
 		tabelModelPinjam = new DefaultTableModel(null,header);
 		table = new JTable();
@@ -107,7 +138,7 @@ public class CekPinjamanClient extends JFrame {
 		
 		try {
 			Connection konek = Koneksi.getKoneksi();
-			String query = "SELECT barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_mulai,pesanan.tanggal_selesai FROM pesanan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.id_pelanggan=?";
+			String query = "SELECT barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_mulai,pesanan.tanggal_selesai FROM pesanan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.id_pelanggan=? AND pesanan.konfirm=1";
 			PreparedStatement p = konek.prepareStatement(query);
 			p.setInt(1, id);
 			ResultSet hasil = p.executeQuery();

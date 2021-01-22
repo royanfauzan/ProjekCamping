@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -37,6 +38,8 @@ import java.awt.event.MouseEvent;
 import java.awt.Cursor;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class FormPengembalian extends JFrame {
 
@@ -77,6 +80,9 @@ public class FormPengembalian extends JFrame {
 	
 	private String kalimat;
 	private JTextField textFieldNamaPeminjam;
+	
+	private String NamaUser;
+	private int lvlUser;
 
 	/**
 	 * Launch the application.
@@ -189,7 +195,7 @@ public class FormPengembalian extends JFrame {
 					e.printStackTrace();
 				}
 				
-				textFieldIdBar.setText(TbIdBar);
+				textFieldIdBar.setText(namaPem);
 				textFieldJmlPinjam.setText(""+jmlPesan);
 				textFieldRusak.setText(""+rusak);
 				textFieldHilang.setText(""+hilang);
@@ -413,11 +419,46 @@ public class FormPengembalian extends JFrame {
 		contentPane.add(textFieldNamaPeminjam);
 		textFieldNamaPeminjam.setColumns(10);
 		
-		JButton btnKeMenu = new JButton("Kembali Ke Menu");
-		btnKeMenu.setBounds(439, 637, 130, 23);
-		btnKeMenu.setBackground(new Color(230,0,35));
-		btnKeMenu.setOpaque(true);
-		contentPane.add(btnKeMenu);
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Utama");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuAdmin frameMenu = new TampilanMenuAdmin();
+				frameMenu.setVisible(true);
+				frameMenu.setLabelNama(NamaUser, lvlUser);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Menu Utama");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameUtama = new TampilanMenuUtama();
+				frameUtama.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
+		
+		
 		
 		
 		
@@ -553,5 +594,10 @@ public class FormPengembalian extends JFrame {
 	public void setTanggal(Date tglBaru) {
 		tanggalSkrg = tglBaru;
 		lblTanggal.setText("Tanggal : "+dateFormat.format(tanggalSkrg));
+	}
+	
+	public void setLabelNama(String a,int b) {
+		this.NamaUser=a;
+		this.lvlUser=b;
 	}
 }

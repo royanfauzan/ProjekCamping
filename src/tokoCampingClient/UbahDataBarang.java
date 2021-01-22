@@ -18,6 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,6 +31,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class UbahDataBarang extends JFrame {
 
@@ -59,6 +62,9 @@ public class UbahDataBarang extends JFrame {
 	private int stokBarang,hargaBarang;
 	private Boolean kembar;
 	private JTextArea textArea;
+	
+	private String NamaUser;
+	private int lvlUser;
 
 	/**
 	 * Launch the application.
@@ -292,6 +298,45 @@ public class UbahDataBarang extends JFrame {
 		lblNewLabel_10_2.setBounds(108, 493, 26, 14);
 		contentPane.add(lblNewLabel_10_2);
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Utama");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuAdmin frameMenu = new TampilanMenuAdmin();
+				frameMenu.setVisible(true);
+				frameMenu.setLabelNama(NamaUser, lvlUser);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Menu Utama");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameUtama = new TampilanMenuUtama();
+				frameUtama.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
+		
 
 		
 		
@@ -445,5 +490,11 @@ public class UbahDataBarang extends JFrame {
 	private void kosongkanTabel() {
 		tabelModel.getDataVector().removeAllElements();
 		tabelModel.fireTableDataChanged();
+	}
+	
+	
+	public void setLabelNama(String a,int b) {
+		this.NamaUser=a;
+		this.lvlUser=b;
 	}
 }

@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -43,7 +46,7 @@ public class OrderBaruAdmin extends JFrame {
 	private JPanel contentPane;
 	private JTable tablePesan;
 	
-	private String header[] = {"ID Pelanggan","Nama Barang","Jumlah","Tanggal Mulai"};
+	private String header[] = {"ID Pelanggan","Nama Barang","Jumlah","Tanggal Mulai","no Telpon"};
 	private String header2[] = {"Nama Barang","Stok"};
 	private DefaultTableModel tabelModelPesan;
 	private DefaultTableModel tabelModelStok;
@@ -63,9 +66,9 @@ public class OrderBaruAdmin extends JFrame {
 
 	private String currIdBarang,kalimat;
 	private JTable tableStok;
-	private JTextField textFieldidpel;
-	private JTextField textFieldStok;
-	private JTextField textFieldidPesan;
+	
+	private String NamaUser;
+	private int lvlUser;
 
 	/**
 	 * Launch the application.
@@ -145,9 +148,6 @@ public class OrderBaruAdmin extends JFrame {
 				currHarga = har;
 				currStok = sto;
 				
-				textFieldidpel.setText(""+currIdPelanggan);
-				textFieldStok.setText(""+currStok);
-				textFieldidPesan.setText(""+currIdPesan);
 				
 				try {
 					Date tglMulai = new SimpleDateFormat("yyyy-MM-dd").parse(strMulai);
@@ -211,46 +211,51 @@ public class OrderBaruAdmin extends JFrame {
 		JButton btnKonfirm = new JButton("Konfirmasi");
 		btnKonfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				jumlahBar = Integer.parseInt(textFieldJml.getText());
 				
-				textFieldidpel.setText(""+currIdPelanggan);
-				textFieldStok.setText(""+currStok);
-				textFieldidPesan.setText(""+currIdPesan);
-				
-				if (currStok>jumlahBar) {
-					konfirmasi();
-					ubahStok();
+				if (!textFieldJml.getText().equals("")&&dateChooserSelesai.getDate()!=null) {
+					jumlahBar = Integer.parseInt(textFieldJml.getText());
 					
-					if (currIdPelanggan!=idBefore) {
-						kalimat = "iD Pelanggan :"+currIdPelanggan+"\n";
-						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
+					
+					if (currStok>jumlahBar) {
+						konfirmasi();
+						ubahStok();
 						
-						idBefore = currIdPelanggan;
+						if (currIdPelanggan!=idBefore) {
+							kalimat = "iD Pelanggan :"+currIdPelanggan+"\n";
+							kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
+							
+							idBefore = currIdPelanggan;
+							
+							totalBiaya =0;
+						} else {
+							kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
+						}
 						
-						totalBiaya =0;
+//						Penghitungan Biaya
+						long jarakMili = dateChooserSelesai.getDate().getTime()-dateChooserMulai.getDate().getTime();
+						int jarakHari = (int)TimeUnit.DAYS.convert(jarakMili, TimeUnit.MILLISECONDS);
+						
+						totalBiaya += currHarga*jarakHari*jumlahBar;
+						
+						
+						
+						kosongkanTabel();
+						getDataStok();
+						getDataTabel();
+						kosongkanInput();
+						
 					} else {
-						kalimat+="Pesanan id "+currIdPesan+" Terkonfirmasi \n";
+						kalimat+="FAILED |Pesanan id "+currIdPesan+" OUT OF STOCK \n";
+
 					}
 					
-//					Penghitungan Biaya
-					long jarakMili = dateChooserSelesai.getDate().getTime()-dateChooserMulai.getDate().getTime();
-					int jarakHari = (int)TimeUnit.DAYS.convert(jarakMili, TimeUnit.MILLISECONDS);
-					
-					totalBiaya += currHarga*jarakHari*jumlahBar;
-					
-					
-					
-					kosongkanTabel();
-					getDataStok();
-					getDataTabel();
-					
-				} else {
-					kalimat+="FAILED |Pesanan id "+currIdPesan+" OUT OF STOCK \n";
 
+					textArea.setText(kalimat+"\n"+"Total Harga : Rp."+totalBiaya);
+				} else {
+					JOptionPane.showMessageDialog(null, "Lengkapi Data Pesanan Terlebih Dahulu!") ;
 				}
 				
-
-				textArea.setText(kalimat+"\n"+"Total Harga : Rp."+totalBiaya);
+				
 
 				
 			}
@@ -261,7 +266,29 @@ public class OrderBaruAdmin extends JFrame {
 		JButton btnNewButton = new JButton("Batal Pesan");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if (!textFieldJml.getText().equals("")&&dateChooserSelesai.getDate()!=null) {
+					
+					if (currIdPelanggan!=idBefore) {
+						kalimat = "iD Pelanggan :"+currIdPelanggan+"\n";
+						kalimat+="Pesanan id "+currIdPesan+" Dibatalkan \n";
+						
+						idBefore = currIdPelanggan;
+						
+						totalBiaya =0;
+					} else {
+						kalimat+="Pesanan id "+currIdPesan+" Dibatalkan \n";
+					}
+					
+					textArea.setText(kalimat+"\n"+"Total Harga : Rp."+totalBiaya);
+					
+					hapusPesanan();
+					kosongkanTabel();
+					kosongkanInput();
+					getDataStok();
+					getDataTabel();
+				} else {
+					JOptionPane.showMessageDialog(null, "Pilih Data Pesanan Terlebih Dahulu!") ;
+				}
 			}
 		});
 		btnNewButton.setBounds(180, 420, 112, 23);
@@ -290,20 +317,44 @@ public class OrderBaruAdmin extends JFrame {
 		textArea = new JTextArea();
 		scrollPane_2.setViewportView(textArea);
 		
-		textFieldidpel = new JTextField();
-		textFieldidpel.setBounds(368, 224, 46, 20);
-		contentPane.add(textFieldidpel);
-		textFieldidpel.setColumns(10);
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 76, 21);
+		contentPane.add(menuBar);
 		
-		textFieldStok = new JTextField();
-		textFieldStok.setBounds(424, 224, 47, 20);
-		contentPane.add(textFieldStok);
-		textFieldStok.setColumns(10);
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
 		
-		textFieldidPesan = new JTextField();
-		textFieldidPesan.setBounds(481, 224, 47, 20);
-		contentPane.add(textFieldidPesan);
-		textFieldidPesan.setColumns(10);
+		JMenuItem mntmItemMenuUtama = new JMenuItem("Menu Admin");
+		mntmItemMenuUtama.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuAdmin frameMenu = new TampilanMenuAdmin();
+				frameMenu.setVisible(true);
+				frameMenu.setLabelNama(NamaUser, lvlUser);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemMenuUtama);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Menu Utama");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TampilanMenuUtama frameUtama = new TampilanMenuUtama();
+				frameUtama.setVisible(true);
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmItemKeluar = new JMenuItem("Keluar");
+		mntmItemKeluar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
+				dispose();
+			}
+		});
+		mnNewMenu.add(mntmItemKeluar);
 		
 
 		
@@ -323,6 +374,21 @@ public class OrderBaruAdmin extends JFrame {
 			e.printStackTrace();
 		}
 		
+		dateChooserMulai.setEnabled(false);
+		
+		JButton btnNewButton_1 = new JButton("Refresh");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				kosongkanTabel();
+				getDataStok();
+				getDataTabel();
+			}
+		});
+		btnNewButton_1.setBounds(540, 53, 89, 20);
+		contentPane.add(btnNewButton_1);
+		textFieldNamaBar.disable();
+		
 	}
 	
 	public void getDataTabel() {
@@ -330,12 +396,12 @@ public class OrderBaruAdmin extends JFrame {
 		{
 			Connection konek = Koneksi.getKoneksi();
 			Statement state = konek.createStatement();
-			String query = "SELECT pesanan.id_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_mulai,pesanan.tanggal_selesai,pesanan.id_pesanan,barang.id_barang,barang.harga_barang,barang.stok_barang FROM pesanan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.konfirm=0";
+			String query = "SELECT pesanan.id_pelanggan,barang.nama_barang,pesanan.jumlah_pesanan,pesanan.tanggal_mulai,pesanan.tanggal_selesai,pesanan.id_pesanan,barang.id_barang,barang.harga_barang,barang.stok_barang,pelanggan.no_telp FROM pelanggan INNER JOIN pesanan ON pelanggan.id_pelanggan = pesanan.id_pelanggan INNER JOIN barang ON pesanan.id_barang = barang.id_barang WHERE pesanan.konfirm=0";
 			ResultSet rs = state.executeQuery(query);
 			while(rs.next())
 			{
 				
-				Object obj[] = new Object[4];
+				Object obj[] = new Object[5];
 				obj[0] = rs.getInt(1);
 				obj[1] = rs.getString(2);
 				obj[2] = rs.getInt(3);
@@ -345,6 +411,7 @@ public class OrderBaruAdmin extends JFrame {
 				idBarang.add(rs.getString(7));
 				listHarga.add(rs.getInt(8));
 				listStok.add(rs.getInt(9));
+				obj[4] = rs.getString(10);
 				
 				tabelModelPesan.addRow(obj);
 			}
@@ -451,5 +518,17 @@ public class OrderBaruAdmin extends JFrame {
 		idBarang.removeAll(idBarang);
 		listHarga.removeAll(listHarga);
 		listStok.removeAll(listStok);
+	}
+	
+	private void kosongkanInput() {
+		textFieldJml.setText("");
+		textFieldNamaBar.setText("");
+		dateChooserMulai.setDate(null);
+		dateChooserSelesai.setDate(null);
+	}
+	
+	public void setLabelNama(String a,int b) {
+		this.NamaUser=a;
+		this.lvlUser=b;
 	}
 }
